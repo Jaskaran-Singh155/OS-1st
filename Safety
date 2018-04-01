@@ -1,0 +1,108 @@
+#include<stdio.h>
+#include<unistd.h>
+int available ;
+struct process {
+	int req ;
+	int allo;
+	
+	int need=req-allo;
+
+}z[20];
+void intake(int b,int c);
+void analysis(int e,int f);
+void safecheck(int d);
+main()
+{	int a,i,b;
+	printf("Welcome user please enter the number of processes");
+	scanf("%d",&a);
+	printf("Please enter the number of resources");
+	scanf("%d",&b);
+	available=b;
+	printf("For each process please define the following :-\n");
+	for(i=0;i<a;i++)
+	{
+		intake(i,b);
+	}
+	analysis(a,b);
+	
+}
+
+void intake(int b,int c)
+{	int a1,a2;
+	printf("Max requirement of process %d ",b+1);
+	
+	scanf("%d",&a1);
+	
+	if(a1>c)
+	{
+		printf("Sorry but requirement cannot be greater than resources - enter again\n\n");
+		scanf("%d",&a1);
+		
+	}
+	printf("Pre-Allocation of process %d ",b+1);
+	scanf("%d",&a2);
+	if(a2>a1)
+	{
+		printf("No need to allocate more than requirement -> making allocation = requirement\n\n");
+		a2=a1;
+	}
+
+	z[b].req=a1;
+	z[b].allo=a2;
+	available=available-a2;
+	printf("%d",available);
+}
+
+void safecheck(int d)
+{
+	int safeSeq[d];
+	int count = 0,i; 
+	bool fin[d]={0};
+	while(count<d)
+	{
+		bool find = false;
+		for (i = 0; i < d; i++)
+        {
+        	if (fin[i] == 0)
+        	{
+			
+        		if (z[i].need > available)
+        			break;
+        		else
+					{available=available+z[i].allo;
+					z[i].allo=0;
+					fin[i]=1;
+					safeSeq[count++] = i;
+					find=true;
+					}
+			}
+		}
+		if (find == false)
+        {
+            printf("System not in safe state");
+        //    return false;
+        }
+	}
+  printf("System is in safe state");
+  for(i=0;i<d;i++)
+  {
+  	printf("%d",safeSeq[i]+1);
+  }
+}
+
+void analysis(int e,int f)
+{
+	int a=0,i;
+	for(i=0;i<e;i++)
+	{
+		a=a+z[i].req;
+	}
+	if(a<e+f)
+	{
+		safecheck(e);
+	}
+	else
+	{
+		printf("System is in unsafe state");
+	}
+}
