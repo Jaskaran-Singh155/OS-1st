@@ -7,11 +7,16 @@ static int counter1=0,counter2;
 struct man {
 	int burst ;
 	int arrival;
+	int id;
 
 }z[100];
+
 struct ReadyQueue{
 	int burst;
+	int flag=0;
+	int id;
 }y[100];
+
 int x=0;
 void timer(int a);
 void readyQueue(int b,int c);
@@ -24,17 +29,18 @@ main()
 {	int a,i;
 	printf("Welcome user please enter the number of processes");
 	scanf("%d",&a);
-	int *bt=(int*)malloc(a*sizeof(int));
-	int *at=(int*)malloc(a*sizeof(int));
+	printf("The arrival time should be less than 15 seconds\n");
 	for(i=0;i<a;i++)
 	{
 
-		printf("Enter burst time of process %d : " , i+1);
+		printf("\nEnter burst time of process %d : " , i+1);
 		scanf("%d" , &z[i].burst);
 		printf("Enter the arrival time of process : ",i+1);
 		scanf("%d" , &z[i].arrival);
+		z[i].id=i+1;
 		
 	}
+	system("cls");
 	timer(a);
 		
 	
@@ -61,7 +67,7 @@ void timer(int a)
 		if(i==19)
 		{
 			
-			printf("\nExecution of step 1 has completed successfully ");
+			printf("\nExecution of step 1 has completed successfully\n ");
 			status(a);
 			execution1(a);
 		}
@@ -81,10 +87,13 @@ void readyQueue(int b,int c)
 		{
 			
 			y[x].burst=z[i].burst;
-			x=x+1;
+			y[x].id=z[i].id;
 			
-				printf("%d",x);
-	//			execution1(x-1);
+			x=x+1;
+		
+			
+		
+		
 		}
 	}
 //	
@@ -99,15 +108,19 @@ void execution1(int d)
 	{
 		for(j=0;j<6;j++)
 		{
-			y[i].burst=y[i].burst-1;
+		
 			if(y[i].burst==0)
 			{goto out;
+			}
+			else
+			{
+					y[i].burst=y[i].burst-1;
 			}
 		
 		}
 			out:{}
 	}
-	printf("\nExecution of step 2 has completed successfully ");
+	printf("\n\nExecution of step 2 has completed successfully \n");
 	status(d);
 	sort(d);
 
@@ -117,16 +130,24 @@ void execution1(int d)
 void sort(int e)
 {
 	
-   int i, j,temp;
-   for (i = 0; i < e; i++)      
+   int i, j,temp,temp2,temp3;
+   for (i = 0; i < e-1; i++)      
     {    
-       for (j = 0; j < e-i; j++) 
+       for (j = 0; j < e-i-1; j++) 
        {
            if (y[j].burst > y[j+1].burst)
            {
               temp=y[j].burst;
+              temp2=y[j].id;
+              temp3=y[j].flag;
+             
               y[j].burst=y[j+1].burst;
+              y[j].id=y[j+1].id;
+              y[j].flag=y[j+1].flag;
+              
               y[j+1].burst=temp;
+              y[j+1].id=temp2;
+              y[j+1].flag=temp3;
         	}
         }
     }
@@ -135,17 +156,20 @@ void sort(int e)
 
 void sjf(int f)
 {int a,i;
+		printf("\n\nExecution of step 3 'shortest job first' has completed successfully \n");
 	for(i=0;i<f;i++)
 	{
-		if(y[i].burst==0)
+		if(y[i].burst==0 && y[i].flag ==0)
 		{
-			printf("\n process %d completed successfully ",i+1);
+			printf("\n process %d completed successfully ",y[i].id);
+		
 		}
-		else
+		else if(y[i].burst!=0)
 		{
 			a=y[i].burst;
 			y[i].burst=y[i].burst-a;
-			printf("\n process %d completed successfully ",i+1);
+			printf("\n process %d completed successfully ",y[i].id);
+			
 		}
 	}
 }
@@ -155,14 +179,19 @@ void status(int a)
 	int i;
 	for(i=0;i<a;i++)
 	{
-		if(y[i].burst==0)
+		if(y[i].burst==0 && y[i].flag==0)
 		{
-			printf("\n Process %d completed successfully ",i+1);
+			printf("\n Process %d completed successfully ",y[i].id);
+			y[i].flag=1;
+				
+		
 		}
-		else
+		else if(y[i].burst!=0)
 		{
 		
-			printf("\n Process %d is in progress : %d",i+1,y[i].burst);
+			printf("\n Process %d is in progress : %d",y[i].id,y[i].burst);
+		
+		
 		}
 		
 	}
