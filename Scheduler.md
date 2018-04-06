@@ -1,8 +1,6 @@
 #include<stdio.h>
 #include<unistd.h>
-#include<pthread.h>
-#include<fcntl.h>
-#include<malloc.h>
+
 static int counter1=0,counter2;
 struct man {
 	int burst ;
@@ -13,7 +11,7 @@ struct man {
 
 struct ReadyQueue{
 	int burst;
-	int flag=0;
+	int flag;
 	int id;
 }y[100];
 
@@ -27,9 +25,9 @@ void status(int g);
 
 main()
 {	int a,i;
-	printf("Welcome user please enter the number of processes");
+	write(1,"Welcome user please enter the number of processes",50);
 	scanf("%d",&a);
-	printf("The arrival time should be less than 15 seconds\n");
+	write(1,"The arrival time should be less than 15 seconds\n",50);
 	for(i=0;i<a;i++)
 	{
 
@@ -67,7 +65,7 @@ void timer(int a)
 		if(i==19)
 		{
 			
-			printf("\nExecution of step 1 has completed successfully\n ");
+			write(1,"\nExecution of Round Robin 1 has completed successfully\n ",50);
 			status(a);
 			execution1(a);
 		}
@@ -88,7 +86,7 @@ void readyQueue(int b,int c)
 			
 			y[x].burst=z[i].burst;
 			y[x].id=z[i].id;
-			
+			y[x].flag=0;
 			x=x+1;
 		
 			
@@ -120,7 +118,7 @@ void execution1(int d)
 		}
 			out:{}
 	}
-	printf("\n\nExecution of step 2 has completed successfully \n");
+	write(1,"\n\nExecution of Round Robin 2 has completed successfully \n",50);
 	status(d);
 	sort(d);
 
@@ -156,7 +154,7 @@ void sort(int e)
 
 void sjf(int f)
 {int a,i;
-		printf("\n\nExecution of step 3 'shortest job first' has completed successfully \n");
+		write(1,"\n\nExecution of step 3 'shortest job first' has completed successfully \n",70);
 	for(i=0;i<f;i++)
 	{
 		if(y[i].burst==0 && y[i].flag ==0)
