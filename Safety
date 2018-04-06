@@ -1,93 +1,107 @@
 #include<stdio.h>
 #include<unistd.h>
 int available ;
+
 struct process {
 	int req ;
 	int allo;
 	
-	int need=req-allo;
+	int need;
 
 }z[20];
+
 void intake(int b,int c);
 void analysis(int e,int f);
 void safecheck(int d);
+
 main()
 {	int a,i,b;
-	printf("Welcome user please enter the number of processes");
+	write(1,"Welcome user please enter the number of processes :",51);
 	scanf("%d",&a);
-	printf("Please enter the number of resources");
+	write(1,"Please enter the instance of resource 		  :",43);
 	scanf("%d",&b);
 	available=b;
-	printf("For each process please define the following :-\n");
+	write(1,"For each process please define the following :-\n",47);
 	for(i=0;i<a;i++)
 	{
 		intake(i,b);
 	}
 	analysis(a,b);
 	
+	
 }
 
 void intake(int b,int c)
 {	int a1,a2;
-	printf("Max requirement of process %d ",b+1);
+	printf("\nMax requirement of process %d ",b+1);
 	
 	scanf("%d",&a1);
 	
 	if(a1>c)
 	{
-		printf("Sorry but requirement cannot be greater than resources - enter again\n\n");
+		write(1,"Sorry but requirement cannot be greater than resources - enter again\n\n",69);
 		scanf("%d",&a1);
 		
 	}
-	printf("Pre-Allocation of process %d ",b+1);
+	printf("Pre-Allocation of process  %d ",b+1);
 	scanf("%d",&a2);
 	if(a2>a1)
 	{
-		printf("No need to allocate more than requirement -> making allocation = requirement\n\n");
+		write(1,"No need to allocate more than requirement -> making allocation = requirement\n\n",77);
 		a2=a1;
 	}
 
 	z[b].req=a1;
 	z[b].allo=a2;
+	z[b].need=a1-a2;
 	available=available-a2;
-	printf("%d",available);
+//	printf("%d",available);
 }
 
 void safecheck(int d)
 {
 	int safeSeq[d];
 	int count = 0,i; 
-	bool fin[d]={0};
+	int fin[d];
+	for(i=0;i<d;i++)
+	{
+		fin[i]=0;
+	}
 	while(count<d)
 	{
-		bool find = false;
+		int find = 0;
 		for (i = 0; i < d; i++)
         {
+      //  	printf("%d\t",i);
         	if (fin[i] == 0)
         	{
-			
-        		if (z[i].need > available)
-        			break;
+        		int j;
+		
+				if (z[i].need > available)
+        			continue;
+        	
+        	
         		else
 					{available=available+z[i].allo;
 					z[i].allo=0;
 					fin[i]=1;
 					safeSeq[count++] = i;
-					find=true;
+					find=1;
 					}
 			}
 		}
-		if (find == false)
+		if (find == 0)
         {
-            printf("System not in safe state");
-        //    return false;
+            write(1,"System not in safe state",26);
+        	exit(0);
         }
 	}
-  printf("System is in safe state");
+  write(1,"\n System is in safe state :-\n Sequence is : ",48);
   for(i=0;i<d;i++)
   {
   	printf("%d",safeSeq[i]+1);
   }
+  
 }
 
 void analysis(int e,int f)
@@ -103,6 +117,6 @@ void analysis(int e,int f)
 	}
 	else
 	{
-		printf("System is in unsafe state");
+		write(1,"\n Sorry ,System is in unsafe state due to constraint failure ",63);
 	}
 }
